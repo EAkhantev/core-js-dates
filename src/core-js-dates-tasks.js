@@ -289,15 +289,26 @@ function getWorkSchedule(period, countWorkDays, countOffDays) {
   const dateStart = new Date(stringStart);
   const dateEnd = new Date(stringEnd);
 
+  const dateUtcStart = new Date(
+    dateStart.getUTCFullYear(),
+    dateStart.getUTCMonth(),
+    dateStart.getUTCDate()
+  );
+  const dateUtcEnd = new Date(
+    dateEnd.getUTCFullYear(),
+    dateEnd.getUTCMonth(),
+    dateEnd.getUTCDate()
+  );
+
   const res = [];
-  dateStart.setDate(dateStart.getDate() - 1);
-  while (dateStart < dateEnd) {
+  dateUtcStart.setUTCDate(dateUtcStart.getUTCDate() - 1);
+  while (dateUtcStart < dateUtcEnd) {
     for (let id = 0; id < countWorkDays; id += 1) {
-      dateStart.setDate(dateStart.getDate() + 1);
-      if (dateStart > dateEnd) return res;
-      res.push(dateStart.toLocaleDateString().replaceAll('.', '-'));
+      dateUtcStart.setUTCDate(dateUtcStart.getUTCDate() + 1);
+      if (dateUtcStart > dateUtcEnd) return res;
+      res.push(dateUtcStart.toLocaleDateString().replaceAll('.', '-'));
     }
-    dateStart.setDate(dateStart.getDate() + countOffDays);
+    dateUtcStart.setUTCDate(dateUtcStart.getUTCDate() + countOffDays);
   }
   return res;
 }
