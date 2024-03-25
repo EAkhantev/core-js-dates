@@ -175,14 +175,13 @@ function formatDate(date) {
  * 1, 2024 => 8
  */
 function getCountWeekendsInMonth(month, year) {
-  const monthToCount = new Date(year, month, 1);
-  monthToCount.setDate(monthToCount.getDate() - 1);
-  const daysInMonth = monthToCount.getDate();
+  const lastDayMonth = new Date(Date.UTC(year, month, 0));
+  const daysInMonth = lastDayMonth.getUTCDate();
   let resultWeekDays = 0;
 
   for (let id = 1; id <= daysInMonth; id += 1) {
-    const day = new Date(year, month - 1, id);
-    if ([5, 6].includes(day.getUTCDay())) {
+    const day = new Date(Date.UTC(year, month - 1, id));
+    if ([6, 0].includes(day.getUTCDay())) {
       resultWeekDays += 1;
     }
   }
@@ -203,7 +202,10 @@ function getCountWeekendsInMonth(month, year) {
  * Date(2024, 1, 23) => 8
  */
 function getWeekNumberByDate(date) {
-  const firstDayYear = new Date(date.getUTCFullYear(), 0, 1);
+  const checkDayYear = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getDate())
+  );
+  const firstDayYear = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
   const days = {
     1: 7,
     2: 6,
@@ -214,8 +216,9 @@ function getWeekNumberByDate(date) {
     0: 1,
   };
   const numberDaysFirstWeek = days[firstDayYear.getUTCDay()];
-  firstDayYear.setUTCDate(firstDayYear.getUTCDate() - 1);
-  const diffDays = (date.getTime() - firstDayYear) / (1000 * 60 * 60 * 24);
+  const diffDays =
+    (checkDayYear.getTime() - firstDayYear.getTime()) / (1000 * 60 * 60 * 24) +
+    1;
   const numberWeeks = Math.ceil((diffDays - numberDaysFirstWeek) / 7) + 1;
   return numberWeeks;
 }
