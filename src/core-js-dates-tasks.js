@@ -308,14 +308,18 @@ function getWorkSchedule(period, countWorkDays, countOffDays) {
   const dateEnd = new Date(stringEnd);
 
   const dateUtcStart = new Date(
-    dateStart.getUTCFullYear(),
-    dateStart.getUTCMonth(),
-    dateStart.getUTCDate()
+    Date.UTC(
+      dateStart.getUTCFullYear(),
+      dateStart.getUTCMonth(),
+      dateStart.getUTCDate()
+    )
   );
   const dateUtcEnd = new Date(
-    dateEnd.getUTCFullYear(),
-    dateEnd.getUTCMonth(),
-    dateEnd.getUTCDate()
+    Date.UTC(
+      dateEnd.getUTCFullYear(),
+      dateEnd.getUTCMonth(),
+      dateEnd.getUTCDate()
+    )
   );
 
   const res = [];
@@ -324,7 +328,11 @@ function getWorkSchedule(period, countWorkDays, countOffDays) {
     for (let id = 0; id < countWorkDays; id += 1) {
       dateUtcStart.setUTCDate(dateUtcStart.getUTCDate() + 1);
       if (dateUtcStart > dateUtcEnd) return res;
-      res.push(dateUtcStart.toLocaleDateString().replaceAll('.', '-'));
+      res.push(
+        dateUtcStart
+          .toLocaleDateString('en-GB', { timeZone: 'UTC' })
+          .replaceAll('/', '-')
+      );
     }
     dateUtcStart.setUTCDate(dateUtcStart.getUTCDate() + countOffDays);
   }
